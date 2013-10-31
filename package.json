@@ -1,0 +1,22 @@
+{
+  "name": "eventemittercollector",
+  "description": "An implementation of EventEmitter that allows you to collect the listeners' results",
+  "keywords": [
+    "events",
+    "async"
+  ],
+  "main": "eventemittercollector.js",
+  "version": "0.1.1",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mercmobily/EventEmitterCollector.git"
+  },
+  "author": {
+    "name": "Tony Mobily"
+  },
+  "dependencies": {
+    "simpledeclare": "0.2.x",
+    "async": "*"
+  }
+}
