@@ -223,46 +223,47 @@ exports = module.exports = declare( null, {
 
 })
 
-
 /*
-as.onAsync( 'event1', 'module1', function( done ){
+as = new exports();
+
+as.on( 'event1', 'module1', function( done ){
   console.log("Called event 'event1' for module 'module1', arguments:");
   console.log( arguments );
   done( null, 'event1 module1 ONE' );
 });
 
-as.onAsync( 'event1', 'module1', function( done ){
+as.on( 'event1', 'module1', function( done ){
   console.log("AGAIN Called event 'event1' for module 'module1', arguments:");
   console.log( arguments );
   done( null, 'event1 module1 TWO' );
 });
 
-as.onAsync( 'event2', 'module1', function( param1, param2, done ){
+as.on( 'event2', 'module1', function( param1, param2, done ){
   console.log("Called event 'event1' for module 'module1', arguments:");
   console.log( arguments );
   done( null, 'event1 module1, PARAMS:' + param1 + ',' + param2 );
 });
 
-as.onAsync( 'event2', 'module1', function( param1, param2, done ){
+as.on( 'event2', 'module1', function( param1, param2, done ){
   console.log("AGAIN Called event 'event1' for module 'module1', arguments:");
   console.log( arguments );
   done( null, 'AGAIN event1 module1, PARAMS:' + param1 + ',' + param2 );
 });
 
-as.onAsync( 'event1', 'module2', function( done ){
+as.on( 'event1', 'module2', function( done ){
   console.log("Called event 'event1' for module 'module2' (TWO!), arguments:");
   console.log( arguments );
   done( null, 'event1 module2' );
 });
 
-as.emitAsync( 'event1', function( err, results ){
+as.emit( 'event1', function( err, results ){
   console.log("------------------");
   console.log("RESULTS FOR event1:");
   console.log( results );
   console.log("------------------");
 })
 
-as.emitAsync( 'event1', function( err, results ){
+as.emit( 'event1', function( err, results ){
   console.log("------------------");
   console.log("RESULTS FOR event1, narrowed to module1:");
   console.log("**************************************************************");
@@ -273,20 +274,19 @@ as.emitAsync( 'event1', function( err, results ){
 })
 
 
-as.emitAsync( 'event2', 'ONE', 'TWO', function( err, results ){
+as.emit( 'event2', 'ONE', 'TWO', function( err, results ){
   console.log("------------------");
   console.log("RESULTS FOR event2:");
   console.log( results );
   console.log("------------------");
 })
 
-as.emitModuleAsync( 'event1', 'module1', function( err, results ){
+as.emitModule( 'event1', 'module1', function( err, results ){
   console.log("------------------");
   console.log("RESULTS FOR event1 for module1:");
   console.log( results );
   console.log("------------------");
 })
-
 */
 
 
