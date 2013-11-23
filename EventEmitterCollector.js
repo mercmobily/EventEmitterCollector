@@ -9,7 +9,7 @@ var dummy
 
 
 // Create the enhanced EventEmitter
-exports = module.exports = declare( null, {
+var EventEmitterCollector = exports = module.exports = declare( null, {
 
   _enrichArray: function( a ){
 
@@ -31,6 +31,9 @@ exports = module.exports = declare( null, {
       
     };
 
+/*
+    // Don't remember why I added this, and doesn't even really work, will
+    // uncomment/delete this function when it comes to me
     a.indexBy = function( attr ){
       var ret = {};
       var newItem;
@@ -42,6 +45,7 @@ exports = module.exports = declare( null, {
       });  
       return ret;
     };
+*/
 
     return a;
 
@@ -86,17 +90,6 @@ exports = module.exports = declare( null, {
 
     this.listenersByModuleEvent[ module ][ event ].push( listener );
     this.listenersByEvent[ event ].push( { module: module, listener: listener } );
-
-    //console.log("\nAFTER ADD SUMMARY:");
-    //console.log("--------------------------");
-    //u = require('util');
-    //console.log( 'this.listenersByModuleEvent:');
-    //console.log( u.inspect( this.listenersByModuleEvent, { depth: 4 } ) );
-
-    //console.log( 'this.listenersByEvent:');
-    //console.log( u.inspect( this.listenersByEvent, { depth: 4 } ) );
-
-    //console.log("--------------------------");
   },
 
   emitModule: function(){
@@ -161,6 +154,9 @@ exports = module.exports = declare( null, {
     }
   },
 
+  addListener: function(){
+    this.emit.apply( this, arguments );
+  },
 
   emit: function(){
 
@@ -219,75 +215,36 @@ exports = module.exports = declare( null, {
         }
       }); 
     }
-  }
-
-})
-
-/*
-as = new exports();
-
-as.on( 'event1', 'module1', function( done ){
-  console.log("Called event 'event1' for module 'module1', arguments:");
-  console.log( arguments );
-  done( null, 'event1 module1 ONE' );
-});
-
-as.on( 'event1', 'module1', function( done ){
-  console.log("AGAIN Called event 'event1' for module 'module1', arguments:");
-  console.log( arguments );
-  done( null, 'event1 module1 TWO' );
-});
-
-as.on( 'event2', 'module1', function( param1, param2, done ){
-  console.log("Called event 'event1' for module 'module1', arguments:");
-  console.log( arguments );
-  done( null, 'event1 module1, PARAMS:' + param1 + ',' + param2 );
-});
-
-as.on( 'event2', 'module1', function( param1, param2, done ){
-  console.log("AGAIN Called event 'event1' for module 'module1', arguments:");
-  console.log( arguments );
-  done( null, 'AGAIN event1 module1, PARAMS:' + param1 + ',' + param2 );
-});
-
-as.on( 'event1', 'module2', function( done ){
-  console.log("Called event 'event1' for module 'module2' (TWO!), arguments:");
-  console.log( arguments );
-  done( null, 'event1 module2' );
-});
-
-as.emit( 'event1', function( err, results ){
-  console.log("------------------");
-  console.log("RESULTS FOR event1:");
-  console.log( results );
-  console.log("------------------");
-})
-
-as.emit( 'event1', function( err, results ){
-  console.log("------------------");
-  console.log("RESULTS FOR event1, narrowed to module1:");
-  console.log("**************************************************************");
-  console.log( results  );
-  console.log( results.groupByModule()  );
-  console.log( results.onlyResults()  );
-  console.log("------------------");
+  },
 })
 
 
-as.emit( 'event2', 'ONE', 'TWO', function( err, results ){
-  console.log("------------------");
-  console.log("RESULTS FOR event2:");
-  console.log( results );
-  console.log("------------------");
-})
+    var EventEmitterCollector = require('eventemittercollector');
 
-as.emitModule( 'event1', 'module1', function( err, results ){
-  console.log("------------------");
-  console.log("RESULTS FOR event1 for module1:");
-  console.log( results );
-  console.log("------------------");
-})
-*/
+    var as = new EventEmitterCollector();
 
+    as.on( 'event1', 'module1', function( done ){
+      console.log("Called event 'event1' (first listener)");
+      done( null, { a1: 'event1, first listener' }  );
+    });
 
+    as.on( 'event1', 'module2', function( done ){
+      console.log("Called event 'event1' (second listener)");
+      done( null, { a1: 'event1, second listener' } );
+    });
+
+    as.on( 'event1', 'module2', function( done ){
+      console.log("Called event 'event1' (third listener)");
+      done( null, { a2: 'event1, third listener' } );
+    });
+
+    as.on( 'event1', function( done ){
+      console.log("Called event 'event1' (fourth listener)");
+      done( null, { a2: 'event1, fourth listener' } );
+    });
+
+    as.emitModule( 'event1', 'module2', function( err, results ){
+      console.log( "Results:");
+      console.log( results );
+    });
 

@@ -5,8 +5,8 @@
     "events",
     "async"
   ],
-  "main": "eventemittercollector.js",
-  "version": "0.3.2",
+  "main": "EventEmitterCollector.js",
+  "version": "0.3.3",
   "private": false,
   "repository": {
     "type": "git",
