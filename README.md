@@ -110,7 +110,6 @@ So, you can associate a "module" (or, call it an "id") to a listener:
 
     as.on( 'event1', 'someId', function( done ){
       console.log("Called event 'event1' (second listener)");
-      console.log( arguments );
       done( null, 'event1, second listener' );
     });
 

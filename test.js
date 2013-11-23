@@ -39,9 +39,7 @@ var compareResults = function( test, a, b ){
   if( ! res ){
     test.fail( a, b, "Record sets do not match", "results comparison" );
   }
-
 }
-
 
 
 // Yeah I could write a function that generates functions, but then I would need
@@ -64,22 +62,24 @@ function listenerA4( done ){
 }
 function listenerP1( p1, p2, done ){
   //console.log("ListenerP1 run");
-  console.log("p1: " + p1 + "; p2: " + p2 );
-  done( null, 'listenerP1' );
+  //console.log("p1: " + p1 + "; p2: " + p2 );
+  done( null, 'listenerP1: ' + (p1 + p2) );
 }
 function listenerP2( p1, p2, done ){
   //console.log("ListenerP2 run");
-  console.log("p1: " + p1 + "; p2: " + p2 );
-  done( null, 'listenerP2' );
+  //console.log("p1: " + p1 + "; p2: " + p2 );
+  done( null, 'listenerP2: ' + (p1 + p2 + 1) );
 }
-
+function listenerE( done ){
+  //console.log("ListenerA4 run");
+  done( new Error("Did not work") );
+}
 
 var tests = {
 
   "straight events": function( test ){
 
     var eec = new( EEC );
-
     eec.on( 'event1', listenerA1 );
     eec.on( 'event1', listenerA2 );
     eec.on( 'event1', listenerA3 );
@@ -92,31 +92,122 @@ var tests = {
         { module: 'global', result: 'listenerA3' },
       ]);
 
+      var eec = new( EEC );
+      eec.on( 'event1', listenerA1 );
+      eec.on( 'event1', listenerE );
+      eec.on( 'event1', listenerA2 );
+
+      eec.emit( 'event1', function( err, results ){
+        test.equal( err.message, 'Did not work' );
+
+        test.done();
+      });
+    });
+
+  },
+
+  "on() with modules": function( test ){
+
+    var eec = new( EEC );
+    eec.on( 'event1', 'module1', listenerA1 );
+    eec.on( 'event1', 'module1', listenerA2 );
+    eec.on( 'event1', 'module2', listenerA3 );
+
+    eec.emit( 'event1', function( err, results ){
+      compareResults( test, results, [ 
+        { module: 'module1', result: 'listenerA1' },
+        { module: 'module1', result: 'listenerA2' },
+        { module: 'module2', result: 'listenerA3' },
+      ]);
+
       test.done();
     });
 
   },
 
-  "2": function( test ){
+  "addListener() alias": function( test ){
 
-    test.done();
+    var eec = new( EEC );
+    eec.on( 'event1', listenerA1 );
+    eec.addListener( 'event1', listenerA2 );
+    eec.on( 'event1', listenerA3 );
+
+    eec.emit( 'event1', function( err, results ){
+      test.ifError( err );
+      compareResults( test, results, [ 
+        { module: 'global', result: 'listenerA1' },
+        { module: 'global', result: 'listenerA2' },
+        { module: 'global', result: 'listenerA3' },
+      ]);
+      test.done();
+    });
   },
 
-  "3": function( test ){
 
-    test.done();
+  "parameters in events": function( test ){
+
+    var eec = new( EEC );
+    eec.on( 'event1', 'module1', listenerP1 );
+    eec.on( 'event1', 'module1', listenerP2 );
+
+    eec.emit( 'event1', 5, 2, function( err, results ){
+      compareResults( test, results, [ 
+        { module: 'module1', result: 'listenerP1: 7' },
+        { module: 'module1', result: 'listenerP2: 8' }
+      ]);
+
+      test.done();
+    });
+
   },
 
-  "4": function( test ){
+  "emit only to specific module": function( test ){
 
-    test.done();
+    var eec = new( EEC );
+    eec.on( 'event1', 'module1', listenerA1 );
+    eec.on( 'event1', 'module1', listenerA2 );
+    eec.on( 'event1', 'module2', listenerA3 );
+
+    eec.emitModule( 'event1', 'module1', function( err, results ){
+      compareResults( test, results, [ 
+        { module: 'module1', result: 'listenerA1' },
+        { module: 'module1', result: 'listenerA2' },
+      ]);
+
+      test.done();
+    });
+
   },
 
+  "helper functions": function( test ){
 
+    var eec = new( EEC );
+    eec.on( 'event1', 'module1', listenerA1 );
+    eec.on( 'event1', 'module2', listenerA2 );
+    eec.on( 'event1', 'module2', listenerA3 );
 
+    eec.emit( 'event1', function( err, results ){
+      test.ifError( err );
+      compareResults( test, results, [ 
+        { module: 'module1', result: 'listenerA1' },
+        { module: 'module2', result: 'listenerA2' },
+        { module: 'module2', result: 'listenerA3' },
+      ]);
 
+      compareResults( test, results.onlyResults(), [ 
+        'listenerA1',
+        'listenerA2',
+        'listenerA3',
+      ]);
 
+      test.deepEqual( results.groupByModule(), {
+        module1: [ 'listenerA1' ],
+        module2: [ 'listenerA2', 'listenerA3' ],
+      });
 
+      test.done();
+    });
+  },
 
 }
   
