@@ -56,10 +56,11 @@ var EventEmitterCollector = exports = module.exports = declare( null, {
     this.listenersByEvent = {}
   },
 
+
   addListener: function(){
     this.on.apply( this, arguments );
   },
-
+ 
   // add a callback for a specific event/module pair. If module is missing,
   // it will default to "global"
   on: function( event, module, listener ){
@@ -154,10 +155,6 @@ var EventEmitterCollector = exports = module.exports = declare( null, {
     }
   },
 
-  addListener: function(){
-    this.emit.apply( this, arguments );
-  },
-
   emit: function(){
 
     var event,
@@ -217,34 +214,4 @@ var EventEmitterCollector = exports = module.exports = declare( null, {
     }
   },
 })
-
-
-    var EventEmitterCollector = require('eventemittercollector');
-
-    var as = new EventEmitterCollector();
-
-    as.on( 'event1', 'module1', function( done ){
-      console.log("Called event 'event1' (first listener)");
-      done( null, { a1: 'event1, first listener' }  );
-    });
-
-    as.on( 'event1', 'module2', function( done ){
-      console.log("Called event 'event1' (second listener)");
-      done( null, { a1: 'event1, second listener' } );
-    });
-
-    as.on( 'event1', 'module2', function( done ){
-      console.log("Called event 'event1' (third listener)");
-      done( null, { a2: 'event1, third listener' } );
-    });
-
-    as.on( 'event1', function( done ){
-      console.log("Called event 'event1' (fourth listener)");
-      done( null, { a2: 'event1, fourth listener' } );
-    });
-
-    as.emitModule( 'event1', 'module2', function( err, results ){
-      console.log( "Results:");
-      console.log( results );
-    });
 

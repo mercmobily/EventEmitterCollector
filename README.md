@@ -14,7 +14,7 @@ In these situations, and possibly others I haven't thought of, "welcome to Event
 
 The EventEmitterCollector constructor can be used just like EventEmitter. Please note that EventEmitter's API is not 100% emulated (although it _can_ be if there is enough interest in this module). At the moment, it supports:
 
-* `on()` and `addListener()`in order to 
+* `on()` (with `addListener()` as an alias )
 * `emit()`
 
 It does _not_ implement:
