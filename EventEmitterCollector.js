@@ -137,7 +137,7 @@ var EventEmitterCollector = exports = module.exports = declare( null, {
             if( err ) {
               done( err );
             } else {
-              done( null, { module: module, result:  res } );
+              done( null, { module: module, result: res } );
             }
 
           }));
