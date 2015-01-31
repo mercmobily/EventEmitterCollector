@@ -9,7 +9,7 @@ var dummy
 
 
 // Create the enhanced EventEmitter
-var EventEmitterCollector = exports = module.exports = declare( null, {
+var EventEmitterCollector = exports = module.exports = declare( Object, {
 
   _enrichArray: function( a ){
 
