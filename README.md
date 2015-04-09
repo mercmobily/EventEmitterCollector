@@ -12,10 +12,10 @@ In these situations, and possibly others I haven't thought of, "welcome to Event
 
 ## The API
 
-The EventEmitterCollector constructor can be used just like EventEmitter. Please note that EventEmitter's API is not 100% emulated (although it _can_ be if there is enough interest in this module). At the moment, it supports:
+The EventEmitterCollector constructor can be used just like EventEmitter, adding "Collect" to the methods' signature. Please note that EventEmitter's API is not 100% emulated (although it _can_ be if there is enough interest in this module). At the moment, it supports:
 
-* `on()` (with `addListener()` as an alias )
-* `emit()`
+* `onCollect()` (with `addListenerCollect()` as an alias )
+* `emitCollect()`
 
 It does _not_ implement:
 
@@ -27,7 +27,7 @@ It does _not_ implement:
 
 It also adds a specific way to emit events belonging to a specific `module`:
 
-* `emitModule()` 
+* `emitCollectModule()` 
 
 Event emitter implementation that will actually collect the listener's results and return them
 
@@ -39,17 +39,17 @@ Here is the most basic usage of EventEmitterCollector:
 
     var as = new EventEmitterCollector();
 
-    as.on( 'event1', function( done ){
+    as.onCollect( 'event1', function( done ){
       console.log("Called event 'event1' (first listener)");
       done( null, 'event1, first listener' );
     });
 
-    as.on( 'event1', function( done ){
+    as.onCollect( 'event1', function( done ){
       console.log("Called event 'event1' (second listener)");
       done( null, 'event1, second listener' );
     });
 
-    as.emit( 'event1', function( err, results ){
+    as.emitCollect( 'event1', function( err, results ){
       console.log( results );
     });
 
@@ -69,17 +69,17 @@ If any one of the listeners sets the `err` variable, other missing listeners wil
 
     var as = new EventEmitterCollector();
 
-    as.on( 'event1', function( done ){
+    as.onCollect( 'event1', function( done ){
       console.log("Called event 'event1' (first listener)");
       done( new Error("Did not work") );
     });
 
-    as.on( 'event1', function( done ){
+    as.onCollect( 'event1', function( done ){
       console.log("Called event 'event1' (second listener)");
       done( null, 'event1, second listener' );
     });
 
-    as.emit( 'event1', function( err, results ){
+    as.emitCollect( 'event1', function( err, results ){
       console.log( "Error:");
       console.log( err );
     });
@@ -103,17 +103,17 @@ So, you can associate a "module" (or, call it an "id") to a listener:
 
     var as = new EventEmitterCollector();
 
-    as.on( 'event1', 'someId', function( done ){
+    as.onCollect( 'event1', 'someId', function( done ){
       console.log("Called event 'event1' (first listener)");
       done( null, 'event1, first listener' );
     });
 
-    as.on( 'event1', 'someId', function( done ){
+    as.onCollect( 'event1', 'someId', function( done ){
       console.log("Called event 'event1' (second listener)");
       done( null, 'event1, second listener' );
     });
 
-    as.emit( 'event1', function( err, results ){
+    as.emitCollect( 'event1', function( err, results ){
       console.log( results );
     });
 
@@ -132,22 +132,22 @@ You can obviously have a mixture of module names as your listeners:
 
     var as = new EventEmitterCollector();
 
-    as.on( 'event1', 'module1', function( done ){
+    as.onCollect( 'event1', 'module1', function( done ){
       console.log("Called event 'event1' (first listener)");
       done( null, 'event1, first listener' );
     });
 
-    as.on( 'event1', 'module2', function( done ){
+    as.onCollect( 'event1', 'module2', function( done ){
       console.log("Called event 'event1' (second listener)");
       done( null, 'event1, second listener' );
     });
 
-    as.on( 'event1', function( done ){
+    as.onCollect( 'event1', function( done ){
       console.log("Called event 'event1' (third listener)");
       done( null, 'event1, third listener' );
     });
 
-    as.emit( 'event1', function( err, results ){
+    as.emitCollect( 'event1', function( err, results ){
       console.log( results );
     });
 
@@ -173,25 +173,25 @@ So, for example:
 
     var as = new EventEmitterCollector();
 
-    as.on( 'event1', 'module1', function( n1, n2, done ){
+    as.onCollect( 'event1', 'module1', function( n1, n2, done ){
       console.log("Called event 'event1'i (first listener)");
       console.log("n1: " + n1 + "; n2: " + n2 );
       done( null, 'event1, first listener' );
     });
 
-    as.on( 'event1', 'module2', function( n1, n2, done ){
+    as.onCollect( 'event1', 'module2', function( n1, n2, done ){
       console.log("Called event 'event1' (second listener)");
       console.log("n1: " + n1 + "; n2: " + n2 );
       done( null, 'event1, second listener' );
     });
 
-    as.on( 'event1', function( n1, n2, done ){
+    as.onCollect( 'event1', function( n1, n2, done ){
       console.log("Called event 'event1' (third listener)");
       console.log("n1: " + n1 + "; n2: " + n2 );
       done( null, 'event1, third listener' );
     });
 
-    as.emit( 'event1', 10, 20, function( err, results ){
+    as.emitCollect( 'event1', 10, 20, function( err, results ){
       console.log( results );
     });
 
@@ -211,34 +211,34 @@ The result:
 
 ## Emit only to specific modules
 
-Sometimes, you might want to emit an event but decide to invoke listeners associated to specific modules. In these cases, you would use `emitModule()`:
+Sometimes, you might want to emit an event but decide to invoke listeners associated to specific modules. In these cases, you would use `emitCollectModule()`:
 
 
     var EventEmitterCollector = require('eventemittercollector');
 
     var as = new EventEmitterCollector();
 
-    as.on( 'event1', 'module1', function( done ){
+    as.onCollect( 'event1', 'module1', function( done ){
       console.log("Called event 'event1' (first listener)");
       done( null, { a1: 'event1, first listener' }  );
     });
 
-    as.on( 'event1', 'module2', function( done ){
+    as.onCollect( 'event1', 'module2', function( done ){
       console.log("Called event 'event1' (second listener)");
       done( null, { a1: 'event1, second listener' } );
     });
 
-    as.on( 'event1', 'module2', function( done ){
+    as.onCollect( 'event1', 'module2', function( done ){
       console.log("Called event 'event1' (third listener)");
       done( null, { a2: 'event1, third listener' } );
     });
 
-    as.on( 'event1', function( done ){
+    as.onCollect( 'event1', function( done ){
       console.log("Called event 'event1' (fourth listener)");
       done( null, { a2: 'event1, fourth listener' } );
     });
 
-    as.emitModule( 'event1', 'module2', function( err, results ){
+    as.emitCollectModule( 'event1', 'module2', function( err, results ){
       console.log( results );
     });
 
@@ -265,27 +265,27 @@ This helper function will strip everything from the array, except the actual res
 
     var as = new EventEmitterCollector();
 
-    as.on( 'event1', 'module1', function( done ){
+    as.onCollect( 'event1', 'module1', function( done ){
       console.log("Called event 'event1' (first listener)");
       done( null, 'event1, first listener' );
     });
 
-    as.on( 'event1', 'module2', function( done ){
+    as.onCollect( 'event1', 'module2', function( done ){
       console.log("Called event 'event1' (second listener)");
       done( null, 'event1, second listener' );
     });
 
-    as.on( 'event1', 'module2', function( done ){
+    as.onCollect( 'event1', 'module2', function( done ){
       console.log("Called event 'event1' (third listener)");
       done( null, 'event1, third listener' );
     });
 
-    as.on( 'event1', function( done ){
+    as.onCollect( 'event1', function( done ){
       console.log("Called event 'event1' (fourth listener)");
       done( null, 'event1, fourth listener' );
     });
 
-    as.emit( 'event1', function( err, results ){
+    as.emitCollect( 'event1', function( err, results ){
       console.log( results.onlyResults() );
     });
 
@@ -309,27 +309,27 @@ This helper function will group results by module:
 
     var as = new EventEmitterCollector();
 
-    as.on( 'event1', 'module1', function( done ){
+    as.onCollect( 'event1', 'module1', function( done ){
       console.log("Called event 'event1' (first listener)");
       done( null, 'event1, first listener' );
     });
 
-    as.on( 'event1', 'module2', function( done ){
+    as.onCollect( 'event1', 'module2', function( done ){
       console.log("Called event 'event1' (second listener)");
       done( null, 'event1, second listener' );
     });
 
-    as.on( 'event1', 'module2', function( done ){
+    as.onCollect( 'event1', 'module2', function( done ){
       console.log("Called event 'event1' (third listener)");
       done( null, 'event1, third listener' );
     });
 
-    as.on( 'event1', function( done ){
+    as.onCollect( 'event1', function( done ){
       console.log("Called event 'event1' (fourth listener)");
       done( null, 'event1, fourth listener' );
     });
 
-    as.emit( 'event1', function( err, results ){
+    as.emitCollect( 'event1', function( err, results ){
       console.log( results.groupByModule() );
     });
 

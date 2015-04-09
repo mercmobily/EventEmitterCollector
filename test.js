@@ -12,8 +12,6 @@ process.on('uncaughtException', function(err) {
 
 var compareResults = function( test, a, b ){
 
-  debugger;
-
   try {
     var a1 = [], a2, a3;
     a.forEach( function( item ){
@@ -80,11 +78,11 @@ var tests = {
   "straight events": function( test ){
 
     var eec = new( EEC );
-    eec.on( 'event1', listenerA1 );
-    eec.on( 'event1', listenerA2 );
-    eec.on( 'event1', listenerA3 );
+    eec.onCollect( 'event1', listenerA1 );
+    eec.onCollect( 'event1', listenerA2 );
+    eec.onCollect( 'event1', listenerA3 );
 
-    eec.emit( 'event1', function( err, results ){
+    eec.emitCollect( 'event1', function( err, results ){
       test.ifError( err );
       compareResults( test, results, [ 
         { module: 'global', result: 'listenerA1' },
@@ -93,11 +91,11 @@ var tests = {
       ]);
 
       var eec = new( EEC );
-      eec.on( 'event1', listenerA1 );
-      eec.on( 'event1', listenerE );
-      eec.on( 'event1', listenerA2 );
+      eec.onCollect( 'event1', listenerA1 );
+      eec.onCollect( 'event1', listenerE );
+      eec.onCollect( 'event1', listenerA2 );
 
-      eec.emit( 'event1', function( err, results ){
+      eec.emitCollect( 'event1', function( err, results ){
         test.equal( err.message, 'Did not work' );
 
         test.done();
@@ -109,11 +107,11 @@ var tests = {
   "on() with modules": function( test ){
 
     var eec = new( EEC );
-    eec.on( 'event1', 'module1', listenerA1 );
-    eec.on( 'event1', 'module1', listenerA2 );
-    eec.on( 'event1', 'module2', listenerA3 );
+    eec.onCollect( 'event1', 'module1', listenerA1 );
+    eec.onCollect( 'event1', 'module1', listenerA2 );
+    eec.onCollect( 'event1', 'module2', listenerA3 );
 
-    eec.emit( 'event1', function( err, results ){
+    eec.emitCollect( 'event1', function( err, results ){
       compareResults( test, results, [ 
         { module: 'module1', result: 'listenerA1' },
         { module: 'module1', result: 'listenerA2' },
@@ -125,14 +123,14 @@ var tests = {
 
   },
 
-  "addListener() alias": function( test ){
+  "addListenerCollect() alias": function( test ){
 
     var eec = new( EEC );
-    eec.on( 'event1', listenerA1 );
-    eec.addListener( 'event1', listenerA2 );
-    eec.on( 'event1', listenerA3 );
+    eec.onCollect( 'event1', listenerA1 );
+    eec.addListenerCollect( 'event1', listenerA2 );
+    eec.onCollect( 'event1', listenerA3 );
 
-    eec.emit( 'event1', function( err, results ){
+    eec.emitCollect( 'event1', function( err, results ){
       test.ifError( err );
       compareResults( test, results, [ 
         { module: 'global', result: 'listenerA1' },
@@ -147,10 +145,10 @@ var tests = {
   "parameters in events": function( test ){
 
     var eec = new( EEC );
-    eec.on( 'event1', 'module1', listenerP1 );
-    eec.on( 'event1', 'module1', listenerP2 );
+    eec.onCollect( 'event1', 'module1', listenerP1 );
+    eec.onCollect( 'event1', 'module1', listenerP2 );
 
-    eec.emit( 'event1', 5, 2, function( err, results ){
+    eec.emitCollect( 'event1', 5, 2, function( err, results ){
       compareResults( test, results, [ 
         { module: 'module1', result: 'listenerP1: 7' },
         { module: 'module1', result: 'listenerP2: 8' }
@@ -164,11 +162,11 @@ var tests = {
   "emit only to specific module": function( test ){
 
     var eec = new( EEC );
-    eec.on( 'event1', 'module1', listenerA1 );
-    eec.on( 'event1', 'module1', listenerA2 );
-    eec.on( 'event1', 'module2', listenerA3 );
+    eec.onCollect( 'event1', 'module1', listenerA1 );
+    eec.onCollect( 'event1', 'module1', listenerA2 );
+    eec.onCollect( 'event1', 'module2', listenerA3 );
 
-    eec.emitModule( 'event1', 'module1', function( err, results ){
+    eec.emitCollectModule( 'event1', 'module1', function( err, results ){
       compareResults( test, results, [ 
         { module: 'module1', result: 'listenerA1' },
         { module: 'module1', result: 'listenerA2' },
@@ -182,11 +180,11 @@ var tests = {
   "helper functions": function( test ){
 
     var eec = new( EEC );
-    eec.on( 'event1', 'module1', listenerA1 );
-    eec.on( 'event1', 'module2', listenerA2 );
-    eec.on( 'event1', 'module2', listenerA3 );
+    eec.onCollect( 'event1', 'module1', listenerA1 );
+    eec.onCollect( 'event1', 'module2', listenerA2 );
+    eec.onCollect( 'event1', 'module2', listenerA3 );
 
-    eec.emit( 'event1', function( err, results ){
+    eec.emitCollect( 'event1', function( err, results ){
       test.ifError( err );
       compareResults( test, results, [ 
         { module: 'module1', result: 'listenerA1' },

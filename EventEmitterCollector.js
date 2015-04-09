@@ -57,13 +57,13 @@ var EventEmitterCollector = exports = module.exports = declare( Object, {
   },
 
 
-  addListener: function(){
-    this.on.apply( this, arguments );
+  addListenerCollect: function(){
+    this.onCollect.apply( this, arguments );
   },
  
   // add a callback for a specific event/module pair. If module is missing,
   // it will default to "global"
-  on: function( event, module, listener ){
+  onCollect: function( event, module, listener ){
 
     // console.log("ADDING:");
     // console.log( event );
@@ -93,7 +93,7 @@ var EventEmitterCollector = exports = module.exports = declare( Object, {
     this.listenersByEvent[ event ].push( { module: module, listener: listener } );
   },
 
-  emitModule: function(){
+  emitCollectModule: function(){
 
     var event, module,
     functionList = [],
@@ -155,7 +155,7 @@ var EventEmitterCollector = exports = module.exports = declare( Object, {
     }
   },
 
-  emit: function(){
+  emitCollect: function(){
 
     var event,
     functionList = [],
